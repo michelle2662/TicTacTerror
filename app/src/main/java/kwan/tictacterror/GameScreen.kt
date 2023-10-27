@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -50,6 +49,7 @@ fun GameScreen() {
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(text = "Player O: 0" , fontSize = 16.sp)
+            Text(text = "Draw: O", fontSize = 16.sp)
             Text(text = "Player X: 0" , fontSize = 16.sp)
         }
 
@@ -72,11 +72,10 @@ fun GameScreen() {
                     shape = RoundedCornerShape(20.dp)
 
                 )
-                .clip(RoundedCornerShape(20.dp))
                 .background(Background),
                 contentAlignment = Alignment.Center
         ) {
-
+            BoardBase()
         }
 
         Row(
