@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-
+    implementation libs.compose.viewmodel
     implementation libs.core.ktx
     implementation libs.appcompat
     implementation libs.material
@@ -69,4 +69,5 @@ dependencies {
     androidTestImplementation libs.ui.test.junit4
     debugImplementation libs.ui.tooling
     debugImplementation libs.ui.test.manifest
+
 }

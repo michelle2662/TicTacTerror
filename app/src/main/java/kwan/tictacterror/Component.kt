@@ -87,7 +87,7 @@ fun BoardBase() {
 fun Cross(){
     Canvas(
         modifier = Modifier
-            .size(7.dp)
+            .size(24.dp)
     ) {
         drawLine(
             color = Color.Green,
@@ -112,17 +112,20 @@ fun Cross(){
 fun Circle(){
     Canvas(
         modifier = Modifier
-            .size(10.dp)
+            .size(24.dp)
     ) {
         drawCircle( color = Color.Blue, style = Stroke(width = 5f))
     }
 }
+
+
 
 //Horizontal Line
 @Preview
 @Composable
 fun Previews() {
     //Cross()
-    Circle()
+    BoardBase()
     //BoardBase()
 }
+
