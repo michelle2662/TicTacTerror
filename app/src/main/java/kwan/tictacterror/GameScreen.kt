@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -115,12 +116,12 @@ fun GameBoard( gameState: GameState,
         for (i in 0 until 9) {
             for (j in 0 until 9){
                 Tile(gameState.board.board[i][j], modifier = Modifier
-                    .clickable { viewModel.playIJ(i,j)}
                     .padding(start = ((300/9 * i) + 5).dp, top = (300/9*j+ 5).dp , )
+                    .size(24.dp)
+                    .clickable { viewModel.playIJ(i,j)}
                     .align(Alignment.TopStart))
             }
-
-    }
+        }
     }
 }
 
@@ -155,9 +156,13 @@ fun PlayerTurn(){
 
 
 @Composable
+fun Tile(gameState: GameState, i: Int, j: Int, modifier: Modifier = Modifier){
+    Tile(gameState.board.board[i][j], modifier = modifier)
+}
+
+@Composable
 fun Tile( state:BoardCellValue, modifier:Modifier = Modifier ){
     Box(
-
         modifier = modifier
     ){
         if (state ==BoardCellValue.CIRCLE){

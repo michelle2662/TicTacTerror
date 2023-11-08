@@ -16,7 +16,11 @@ data class Board(
     val board: Array<Array<BoardCellValue>> = Array(9, {i -> Array(9, {j -> BoardCellValue.NONE})})
 ) {
     fun makeMove(row:Int, col:Int, currentTurn: BoardCellValue) : Board {
-        val newBoard : Array<Array<BoardCellValue>> = Array(9, {i -> Array(9, {j -> board[i][j]})})
+        val newBoard : Array<Array<BoardCellValue>> = Array(9) { i ->
+            Array(
+                9
+            ) { j -> board[i][j] }
+        }
         newBoard[row][col] = currentTurn
         return Board(newBoard)
 
