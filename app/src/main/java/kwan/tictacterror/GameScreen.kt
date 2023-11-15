@@ -115,11 +115,15 @@ fun GameBoard( gameState: GameState,
 
         for (i in 0 until 9) {
             for (j in 0 until 9){
-                Tile(gameState.board.board[i][j], modifier = Modifier
+                var modifier = Modifier
                     .padding(start = ((300/9 * i) + 5).dp, top = (300/9*j+ 5).dp , )
                     .size(24.dp)
-                    .clickable { viewModel.playIJ(i,j)}
-                    .align(Alignment.TopStart))
+                    .align(Alignment.TopStart)
+                if (gameState.board.isPlayable(i,j)){
+                    modifier = modifier.clickable { viewModel.playIJ(i,j)}
+
+                }
+                    Tile(gameState.board.board[i][j], modifier = modifier)
             }
         }
     }

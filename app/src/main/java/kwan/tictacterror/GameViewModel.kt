@@ -8,17 +8,7 @@ class GameViewModel: ViewModel() {
 
     //when player click on certain square, update game board state
     fun playIJ( i: Int, j: Int){
-        val nextPlayer : BoardCellValue
-        val currentTurn = state.value.currentTurn
-        if (currentTurn == BoardCellValue.CIRCLE){
-            nextPlayer = BoardCellValue.CROSS
-        }else {
-            nextPlayer = BoardCellValue.CIRCLE
-        }
-
-        val newState = state.value.copy(board = state.value.board.makeMove(i,j,currentTurn), currentTurn = nextPlayer)
-
-        state.value = newState
+        state.value = state.value.playIJ(i,j)
     }
 
 

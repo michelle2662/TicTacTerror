@@ -90,7 +90,7 @@ fun Cross(){
             .size(24.dp)
     ) {
         drawLine(
-            color = Color.Green,
+            color = Color.DarkGray,
             strokeWidth = 5f,
             cap = StrokeCap.Round,
             start = Offset(x = 0f, y = 0f),
@@ -98,7 +98,7 @@ fun Cross(){
         )
         
         drawLine(
-            color = Color.Green,
+            color = Color.DarkGray,
             strokeWidth = 5f,
             cap = StrokeCap.Round,
             start = Offset(x = 0f, y = size.height),
