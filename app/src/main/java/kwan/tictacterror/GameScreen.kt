@@ -36,7 +36,8 @@ import kwan.tictacterror.ui.theme.Background
 fun GameScreen(
     viewModel: GameViewModel = viewModel { GameViewModel() },
     gameState:GameState = viewModel.state.value,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+
 ) {
     Column(
         modifier = modifier
@@ -60,7 +61,7 @@ fun GameScreen(
 
 
         //player turn information
-        PlayerTurn()
+        PlayerTurn(viewModel)
 
     }
 }
@@ -119,18 +120,18 @@ fun GameBoard( gameState: GameState,
                     .padding(start = ((300/9 * i) + 5).dp, top = (300/9*j+ 5).dp , )
                     .size(24.dp)
                     .align(Alignment.TopStart)
-                if (gameState.board.isPlayable(i,j)){
-                    modifier = modifier.clickable { viewModel.playIJ(i,j)}
+                if (gameState.board.isPlayable(j,i)){
+                    modifier = modifier.clickable { viewModel.playIJ(j,i)}
 
                 }
-                    Tile(gameState.board.board[i][j], modifier = modifier)
+                    Tile(gameState.board.board[j][i], modifier = modifier)
             }
         }
     }
 }
 
 @Composable
-fun PlayerTurn(){
+fun PlayerTurn(viewModel: GameViewModel){
     //Player turn
     Row(
         modifier = Modifier
@@ -139,12 +140,12 @@ fun PlayerTurn(){
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = "Player O turn",
+        Text(text = viewModel.getCurrentPlayer(),
             fontSize = 24.sp,
             fontStyle = FontStyle.Italic)
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {viewModel.restart()},
             shape = RoundedCornerShape(5.dp),
             elevation = ButtonDefaults.buttonElevation(5.dp),
             colors = ButtonDefaults.buttonColors(

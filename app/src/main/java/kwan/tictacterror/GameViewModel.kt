@@ -11,6 +11,18 @@ class GameViewModel: ViewModel() {
         state.value = state.value.playIJ(i,j)
     }
 
+    fun restart(){
+        state.value = state.value.reset()
+    }
+
+    fun getCurrentPlayer(): String{
+        var turn = state.value.currentTurn
+        if (turn == BoardCellValue.CIRCLE){
+            return "Player O's turn"
+        }else {
+            return "Player X's turn"
+        }
+    }
 
 
 

@@ -18,35 +18,61 @@ data class GameState(
         }else {
             nextPlayer = BoardCellValue.CIRCLE
         }
-        return copy(board = board.makeMove(i,j,currentTurn), currentTurn = nextPlayer)
 
+        if (board.emptySpace(i,j)) {
+            return copy(board = board.makeMove(i,j,currentTurn), currentTurn = nextPlayer)
+        }
+        return copy()
+
+    }
+
+    fun reset():GameState{
+
+        return copy(board = Board())
     }
 }
 
 data class Board(
     val board: Array<Array<BoardCellValue>> = Array(9, {i -> Array(9, {j -> BoardCellValue.NONE})}),
-    val activeBoard: Int = 0
+    var activeBoard: Int = 0
 
 ) {
+    fun emptySpace(i:Int, j:Int):Boolean{
+        if (board[i][j] != BoardCellValue.NONE){
+            return false
+        }
+        return true
+    }
     fun makeMove(row:Int, col:Int, currentTurn: BoardCellValue) : Board {
         val newBoard : Array<Array<BoardCellValue>> = Array(9) { i ->
             Array(
                 9
             ) { j -> board[i][j] }
         }
+
         newBoard[row][col] = currentTurn
 
-        var newActiveBoard = 0
         if (advanceActiveBoard(newBoard, activeBoard)) {
-
-             newActiveBoard = activeBoard + 1
+            if (activeBoard == 2){
+                activeBoard = 5
+            } else if (activeBoard == 5){
+                activeBoard = 8
+            } else if (activeBoard > 6 && activeBoard <= 8){
+                activeBoard -=1
+            }else if (activeBoard == 6){
+                activeBoard = 3
+            }else if (activeBoard == 3){
+                activeBoard = 4
+            } else {
+                activeBoard+=1
+            }
         }
-        return Board(newBoard, newActiveBoard)
+        return Board(newBoard, activeBoard)
 
     }
 
     fun isPlayable(i:Int, j:Int) : Boolean {
-        val index :Int = i/3 + j/3
+        val index :Int = (i/3 * 3) + (j/3)
         return activeBoard == index
     }
 }
@@ -67,10 +93,6 @@ private fun advanceActiveBoard(board:Array<Array<BoardCellValue>>, activeBoard: 
         }
     }
 
-
-
-    //check for winner
-
     //vertical first column
     if (board[row][col] == board[row+1][col] && board[row+1][col] == board[row+2][col] && board[row][col] != BoardCellValue.NONE){
         return true
@@ -87,17 +109,17 @@ private fun advanceActiveBoard(board:Array<Array<BoardCellValue>>, activeBoard: 
     }
 
     //horizontal first row
-    if (board[row][col] == board[row][col+1] && board[row][col+1] == board[row][col+1] && board[row][col+1] != BoardCellValue.NONE){
+    if (board[row][col] == board[row][col+1] && board[row][col+1] == board[row][col+2] && board[row][col+1] != BoardCellValue.NONE){
         return true
     }
 
     //horizontal second row
-    if (board[row+1][col] == board[row+1][col+1] && board[row+1][col+1] == board[row+1 ][col+1] && board[row+ 1][col + 1] != BoardCellValue.NONE){
+    if (board[row+1][col] == board[row+1][col+1] && board[row+1][col+1] == board[row+1 ][col+2] && board[row+ 1][col + 1] != BoardCellValue.NONE){
         return true
     }
 
     //horizontal third row
-    if (board[row+2][col] == board[row+2][col+1] && board[row+2][col+1] == board[row+2 ][col+1] && board[row+ 2][col] != BoardCellValue.NONE){
+    if (board[row+2][col] == board[row+2][col+1] && board[row+2][col+1] == board[row+2 ][col+2] && board[row+ 2][col] != BoardCellValue.NONE){
         return true
     }
 
@@ -111,18 +133,24 @@ private fun advanceActiveBoard(board:Array<Array<BoardCellValue>>, activeBoard: 
         return true
     }
 
-
-
     //check if active board is filled
+    var count = 0
     for (i in  row .. row+2){
         for (j in col..col+2) {
-            if (board[row][col] == BoardCellValue.NONE) {
+            if (board[i][j] == BoardCellValue.NONE) {
                 return false
+            }else {
+                count++
             }
         }
     }
 
-    return false
+    if (count == 9) {
+        return true
+    }else {
+        return false
+    }
+
 }
 
 
