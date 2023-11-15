@@ -3,33 +3,30 @@ package kwan.tictacterror
 data class GameState(
     val playerOScore: Int = 0,
     val playerXScore: Int = 0,
-    //val drawCount: Int = 0,
-    //val hintText: String = "Player 'O' turn",
     val currentTurn:BoardCellValue = BoardCellValue.CROSS,
     val hasWon: Boolean = false,
-    //val victoryCount: Int = 0,
     val board:Board = Board(),
-    //val victoryType: VictoryType
 ) {
     fun playIJ( i: Int, j: Int) : GameState {
         val nextPlayer : BoardCellValue
+        var newPlayerOScore = playerOScore
+        var newPlayerXScore = playerXScore
         if (currentTurn == BoardCellValue.CIRCLE){
             nextPlayer = BoardCellValue.CROSS
+            newPlayerOScore += calculateScore(currentTurn)
         }else {
             nextPlayer = BoardCellValue.CIRCLE
-        }
+            newPlayerXScore += calculateScore(currentTurn)
 
-        if (board.emptySpace(i,j)) {
-            return copy(board = board.makeMove(i,j,currentTurn), currentTurn = nextPlayer)
         }
-        return copy()
+        return copy(board = board.makeMove(i,j,currentTurn), currentTurn = nextPlayer,
+            playerOScore = newPlayerOScore, playerXScore = newPlayerXScore)
+    }
+
+    fun calculateScore(currentTurn: BoardCellValue): Int{
 
     }
 
-    fun reset():GameState{
-
-        return copy(board = Board())
-    }
 }
 
 data class Board(
@@ -73,7 +70,8 @@ data class Board(
 
     fun isPlayable(i:Int, j:Int) : Boolean {
         val index :Int = (i/3 * 3) + (j/3)
-        return activeBoard == index
+
+        return activeBoard == index && emptySpace(i,j)
     }
 }
 

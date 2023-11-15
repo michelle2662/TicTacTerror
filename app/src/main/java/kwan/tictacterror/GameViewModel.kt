@@ -12,7 +12,7 @@ class GameViewModel: ViewModel() {
     }
 
     fun restart(){
-        state.value = state.value.reset()
+        state.value = GameState()
     }
 
     fun getCurrentPlayer(): String{
