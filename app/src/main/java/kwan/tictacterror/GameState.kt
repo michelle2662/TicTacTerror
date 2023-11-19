@@ -24,7 +24,8 @@ data class GameState(
     }
 
     fun calculateScore(currentTurn: BoardCellValue): Int{
-
+        // TODO
+        return 0
     }
 
 }
