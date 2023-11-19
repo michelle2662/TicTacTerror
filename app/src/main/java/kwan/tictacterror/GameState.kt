@@ -1,34 +1,109 @@
 package kwan.tictacterror
 
+import android.util.Log
+
+data class Point(val x: Int, val y: Int)
+typealias Line = Set<Point>
+
+fun Line.containsPoint(i : Int, j: Int): Boolean = contains(Point(i,j))
+
 data class GameState(
     val playerOScore: Int = 0,
     val playerXScore: Int = 0,
     val currentTurn:BoardCellValue = BoardCellValue.CROSS,
+    val linesCreated : List<Line> = emptyList(),
     val hasWon: Boolean = false,
     val board:Board = Board(),
 ) {
-    fun playIJ( i: Int, j: Int) : GameState {
+    fun playIJ(i: Int, j: Int) : GameState {
         val nextPlayer : BoardCellValue
+        val newBoard = board.makeMove(i,j,currentTurn)
         var newPlayerOScore = playerOScore
         var newPlayerXScore = playerXScore
-        if (currentTurn == BoardCellValue.CIRCLE){
+        val newLines = mutableListOf<Line>()
+        val newScore = calculateLinesAndScore(newBoard.board, newLines, i, j)
+        if (currentTurn == BoardCellValue.CIRCLE) {
             nextPlayer = BoardCellValue.CROSS
-            newPlayerOScore += calculateScore(currentTurn)
-        }else {
+            newPlayerOScore += newScore
+        } else {
             nextPlayer = BoardCellValue.CIRCLE
-            newPlayerXScore += calculateScore(currentTurn)
-
+            newPlayerXScore += newScore
         }
-        return copy(board = board.makeMove(i,j,currentTurn), currentTurn = nextPlayer,
-            playerOScore = newPlayerOScore, playerXScore = newPlayerXScore)
+        return copy(
+            board = newBoard,
+            currentTurn = nextPlayer,
+            linesCreated = newLines,
+            playerOScore = newPlayerOScore,
+            playerXScore = newPlayerXScore
+        )
     }
-
-    fun calculateScore(currentTurn: BoardCellValue): Int{
-        // TODO
-        return 0
-    }
-
 }
+
+
+private fun Line.toScore(): Int {
+    return 2 * size - 5
+}
+
+
+fun calculateLinesAndScore(
+    board: Array<Array<BoardCellValue>>,
+    outLines: MutableList<Line>,
+    i: Int,
+    j: Int
+): Int {
+    val player = board[i][j]
+    check(player != BoardCellValue.NONE) {
+        "Move has not been played on board yet"
+    }
+    val topLeftDiagonal = calculateLine(board, player, i, j, -1, -1)
+    val topRightDiagonal = calculateLine(board, player, i, j, -1, 1)
+    val verticalLine = calculateLine(board, player, i, j, 1, 0)
+    val horizontalLine = calculateLine(board, player, i, j, 0, 1)
+
+    Log.d("TTT", "topLeftDiagonal: $topLeftDiagonal")
+    Log.d("TTT", "topRightDiagonal: $topRightDiagonal")
+    Log.d("TTT", "verticalLine: $verticalLine")
+    Log.d("TTT", "horizontalLine: $horizontalLine")
+
+    val allLines = listOfNotNull(
+        topLeftDiagonal,
+        topRightDiagonal,
+        verticalLine,
+        horizontalLine
+    )
+    outLines.addAll(allLines)
+    return allLines.sumOf { it.toScore() }
+}
+
+fun calculateLine(
+    board: Array<Array<BoardCellValue>>,
+    player: BoardCellValue,
+    i: Int,
+    j: Int,
+    rowIncrement: Int,
+    colIncrement: Int
+): Line? {
+    // calculate length of line Top Left to Bottom Right
+    val line = mutableSetOf<Point>()
+    var x = i
+    var y = j
+    while (x >= 0 && y >= 0 && x < 9 && y < 9 && board[x][y] == player) {
+        line.add(Point(x, y))
+        x += rowIncrement
+        y += colIncrement
+    }
+    x = i
+    y = j
+    while (x >= 0 && y >= 0 && x < 9 && y < 9 && board[x][y] == player) {
+        line.add(Point(x, y))
+        x += -rowIncrement
+        y += -colIncrement
+    }
+
+    return line.takeIf { it.size >= 3 }
+}
+
+
 
 data class Board(
     val board: Array<Array<BoardCellValue>> = Array(9, {i -> Array(9, {j -> BoardCellValue.NONE})}),
@@ -78,15 +153,15 @@ data class Board(
 
 private fun advanceActiveBoard(board:Array<Array<BoardCellValue>>, activeBoard: Int): Boolean{
     val (row, col) = when (activeBoard){
-        0 -> Pair(0,0);
-        1 -> Pair(0,3);
-        2 -> Pair(0,6);
-        3 -> Pair(3,0);
-        4 -> Pair(3,3);
-        5 -> Pair(3,6);
-        6 -> Pair(6,0);
-        7 -> Pair(6,3);
-        8 -> Pair(6,6);
+        0 -> Pair(0,0)
+        1 -> Pair(0,3)
+        2 -> Pair(0,6)
+        3 -> Pair(3,0)
+        4 -> Pair(3,3)
+        5 -> Pair(3,6)
+        6 -> Pair(6,0)
+        7 -> Pair(6,3)
+        8 -> Pair(6,6)
         else -> {
             error("Invalid active board")
         }

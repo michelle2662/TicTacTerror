@@ -18,6 +18,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -29,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
 import kwan.tictacterror.ui.theme.Background
 
 
@@ -51,7 +57,7 @@ fun GameScreen(
     ){
 
         //Player info
-        PlayerInfo()
+        PlayerInfo(gameState)
 
         //title
         Title()
@@ -80,7 +86,7 @@ fun Title(){
     )
 }
 @Composable
-fun PlayerInfo(){
+fun PlayerInfo(gameState: GameState){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -90,14 +96,15 @@ fun PlayerInfo(){
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
-        Text(text = "Player O: 0" , fontSize = 16.sp)
-        Text(text = "Draw: O", fontSize = 16.sp)
-        Text(text = "Player X: 0" , fontSize = 16.sp)
+        Text(text = "Player O: ${gameState.playerOScore}" , fontSize = 16.sp)
+        Text(text = "Player X: ${gameState.playerXScore}" , fontSize = 16.sp)
     }
 }
 @Composable
-fun GameBoard( gameState: GameState,
-             viewModel:GameViewModel ) {
+fun GameBoard(
+    gameState: GameState,
+    viewModel:GameViewModel
+) {
     //Game board
     Box(modifier = Modifier
         .wrapContentWidth()
@@ -114,17 +121,31 @@ fun GameBoard( gameState: GameState,
     ) {
         BoardBase()
 
+        var showLine: Line? by remember { mutableStateOf(null) }
+        LaunchedEffect(key1 = gameState.linesCreated) {
+            gameState.linesCreated.forEach {
+                showLine = it
+                delay(300)
+            }
+            showLine = null
+        }
+
         for (i in 0 until 9) {
             for (j in 0 until 9){
+                val highLight = if (showLine?.containsPoint(j, i) == true) {
+                    Modifier.background(Color.Red.copy(alpha = 0.5f))
+                } else {
+                    Modifier
+                }
                 var modifier = Modifier
-                    .padding(start = ((300/9 * i) + 5).dp, top = (300/9*j+ 5).dp , )
+                    .padding(start = ((300 / 9 * i) + 5).dp, top = (300 / 9 * j + 5).dp,)
                     .size(24.dp)
                     .align(Alignment.TopStart)
+                    .then(highLight)
                 if (gameState.board.isPlayable(j,i)){
-                    modifier = modifier.clickable { viewModel.playIJ(j,i)}
-
+                    modifier = modifier.clickable { viewModel.playIJ(j,i) }
                 }
-                    Tile(gameState.board.board[j][i], modifier = modifier)
+                Tile(gameState.board.board[j][i], modifier = modifier)
             }
         }
     }
@@ -158,19 +179,15 @@ fun PlayerTurn(viewModel: GameViewModel){
     }
 }
 
-
-
 @Composable
-fun Tile(gameState: GameState, i: Int, j: Int, modifier: Modifier = Modifier){
-    Tile(gameState.board.board[i][j], modifier = modifier)
-}
-
-@Composable
-fun Tile( state:BoardCellValue, modifier:Modifier = Modifier ){
+fun Tile(
+    state:BoardCellValue,
+    modifier: Modifier = Modifier
+){
     Box(
         modifier = modifier
     ){
-        if (state ==BoardCellValue.CIRCLE){
+        if (state == BoardCellValue.CIRCLE) {
             Circle()
         }else if (state == BoardCellValue.CROSS) {
             Cross()

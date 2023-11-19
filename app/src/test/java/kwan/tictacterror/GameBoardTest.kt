@@ -8,12 +8,7 @@ import org.junit.Test
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
-    @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
-    }
-
+class GameBoardTest {
     @Test
     fun changingTurn_isCorrect(){
         var gameState = GameState()
