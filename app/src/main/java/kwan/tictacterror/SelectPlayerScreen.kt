@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,11 +25,9 @@ import kwan.tictacterror.ui.theme.Background
 
 @Composable
 fun SelectPlayerScreen(
-    viewModel: GameViewModel = viewModel { GameViewModel() },
+    viewModel: GameViewModel,
     modifier: Modifier = Modifier,
-    gameState: GameState= viewModel.state.value,
-    navController: NavController,
-
+    navController: NavController
 ) {
     Column(
         modifier = modifier
@@ -65,7 +64,7 @@ fun SelectPlayer(
 //                navController.navigate(route = Screen.gameScreen.route)
 //            },
             onClick = {
-                viewModel.setMode(Mode.SINGLEPLAYER)
+                viewModel.setMode(Mode.SinglePlayer(GameAi()))
                 navController.navigate(route = Screen.GameScreen.route)
 
             },
@@ -86,9 +85,9 @@ fun SelectPlayer(
 //                navController.navigate(route = Screen.gameScreen.route)
 //            },
             onClick = {
-                    viewModel.setMode(Mode.MULTIPLAYER)
-                      navController.navigate(route = Screen.GameScreen.route)
-                      },
+                viewModel.setMode(Mode.Multiplayer)
+                navController.navigate(route = Screen.GameScreen.route)
+            },
             shape = RoundedCornerShape(5.dp),
             elevation = ButtonDefaults.buttonElevation(5.dp),
             colors = ButtonDefaults.buttonColors(

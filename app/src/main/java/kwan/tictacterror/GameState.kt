@@ -17,7 +17,7 @@ data class GameState(
 ) {
 
     fun undo() : GameState {
-        return previousState?.copy(previousState = null) ?: this
+        return previousState ?: this
     }
 
     fun playIJ(i: Int, j: Int) : GameState {
@@ -47,9 +47,22 @@ data class GameState(
     }
 }
 
-
 private fun Line.toScore(): Int {
     return 2 * size - 5
+}
+
+fun GameState.possibleMoves(): List<Point> {
+    val yOffset = (board.activeBoard % 3) * 3
+    val xOffset = (board.activeBoard / 3) * 3
+    val moves = mutableListOf<Point>()
+    for (i in 0 until 3) {
+        for (j in 0 until 3) {
+            if (board.board[i + xOffset][j + yOffset] == BoardCellValue.NONE) {
+                moves.add(Point(i + xOffset, j + yOffset))
+            }
+        }
+    }
+    return moves
 }
 
 
@@ -147,7 +160,6 @@ data class Board(
 
     fun isPlayable(i:Int, j:Int) : Boolean {
         val index :Int = (i/3 * 3) + (j/3)
-
         return activeBoard == index && emptySpace(i,j)
     }
 }

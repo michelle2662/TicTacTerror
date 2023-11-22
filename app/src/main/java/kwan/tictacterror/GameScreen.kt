@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,11 +50,10 @@ import kwan.tictacterror.ui.theme.Background
 
 @Composable
 fun GameScreen(
-    viewModel: GameViewModel = viewModel { GameViewModel() },
+    viewModel: GameViewModel,
     gameState:GameState = viewModel.state.value,
     modifier: Modifier = Modifier,
-    navController: NavController,
-
+    navController: NavController
 ) {
     Column(
         modifier = modifier
@@ -299,5 +299,8 @@ fun Tile(
 @Preview
 @Composable
 fun GameScreenPreview(){
-    GameScreen(navController = rememberNavController())
+    GameScreen(
+        navController = rememberNavController(),
+        viewModel = GameViewModel()
+    )
 }
