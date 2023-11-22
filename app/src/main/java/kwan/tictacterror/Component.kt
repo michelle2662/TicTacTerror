@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 fun BoardBase() {
     Canvas( modifier = Modifier
         .size(300.dp)
+
     ) {
 
 

@@ -13,6 +13,7 @@ data class GameState(
     val hasWon: Boolean = false,
     val board:Board = Board(),
     val previousBoard: Board = Board(),
+    val gameStarted:Boolean = false
 ) {
 
     fun undo() : GameState{
@@ -32,6 +33,7 @@ data class GameState(
 
     fun playIJ(i: Int, j: Int) : GameState {
         val nextPlayer : BoardCellValue
+        val newGameStarted : Boolean = true
         val previousBoard = board.copy()
         val newBoard = board.makeMove(i,j,currentTurn)
         var newPlayerOScore = playerOScore
@@ -51,7 +53,8 @@ data class GameState(
             currentTurn = nextPlayer,
             linesCreated = newLines,
             playerOScore = newPlayerOScore,
-            playerXScore = newPlayerXScore
+            playerXScore = newPlayerXScore,
+            gameStarted = newGameStarted
         )
     }
 }

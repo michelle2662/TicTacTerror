@@ -20,6 +20,10 @@ class GameViewModel: ViewModel() {
         return state.value.previousBoard != state.value.board
     }
 
+    fun BoardDirectionNoShow():Boolean{
+        return state.value.gameStarted
+    }
+
     fun restart(){
         state.value = GameState()
     }
