@@ -14,8 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,10 +34,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 import kwan.tictacterror.ui.theme.Background
 
@@ -43,6 +47,7 @@ fun GameScreen(
     viewModel: GameViewModel = viewModel { GameViewModel() },
     gameState:GameState = viewModel.state.value,
     modifier: Modifier = Modifier,
+    navController: NavController,
 
 ) {
     Column(
@@ -69,15 +74,36 @@ fun GameScreen(
         //player turn information
         PlayerTurn(viewModel)
 
+        //undo
+        Undo(gameState, viewModel)
+
+        //
+
     }
 }
 
 @Composable
-fun Title(){
+fun Undo(
+    gameState: GameState,
+    viewModel: GameViewModel
+){
+    IconButton(
+        enabled = viewModel.canUndo(),
+        onClick = { viewModel.undo() }
+    ){
+        Icon(Icons.Default.ArrowBack, contentDescription = "Undo")
+    }
+}
+
+
+@Composable
+fun Title(
+    size : Int =  55
+){
     //title
     Text(
         text = "Tic Tac Terror",
-        fontSize = 50.sp,
+        fontSize = size.sp,
         fontWeight = FontWeight.Bold,
         fontFamily = FontFamily.Cursive,
         color = Color.Black,
@@ -195,8 +221,4 @@ fun Tile(
     }
 }
 
-@Preview
-@Composable
-fun Prev(){
-    GameScreen(gameState = GameState())
-}
+

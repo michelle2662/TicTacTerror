@@ -5,10 +5,19 @@ import androidx.lifecycle.ViewModel
 
 class GameViewModel: ViewModel() {
     val state = mutableStateOf(GameState())
+    var gameMode = Mode.SINGLEPLAYER
 
     //when player click on certain square, update game board state
     fun playIJ( i: Int, j: Int){
         state.value = state.value.playIJ(i,j)
+    }
+
+    fun undo() {
+        state.value = state.value.undo()
+    }
+
+    fun canUndo():Boolean{
+        return state.value.previousBoard != state.value.board
     }
 
     fun restart(){
@@ -24,7 +33,14 @@ class GameViewModel: ViewModel() {
         }
     }
 
+    fun setMode(mode: Mode) {
+        this.gameMode = mode
+    }
 
 
 
+}
+
+enum class Mode{
+    SINGLEPLAYER, MULTIPLAYER
 }

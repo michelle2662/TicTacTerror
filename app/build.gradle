@@ -48,6 +48,9 @@ android {
 }
 
 dependencies {
+    def nav_version = "2.7.5"
+
+    implementation "androidx.navigation:navigation-compose:$nav_version"
     implementation libs.compose.viewmodel
     implementation libs.core.ktx
     implementation libs.appcompat

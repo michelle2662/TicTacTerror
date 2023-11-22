@@ -1,7 +1,5 @@
 package kwan.tictacterror
 
-import android.util.Log
-
 data class Point(val x: Int, val y: Int)
 typealias Line = Set<Point>
 
@@ -14,9 +12,27 @@ data class GameState(
     val linesCreated : List<Line> = emptyList(),
     val hasWon: Boolean = false,
     val board:Board = Board(),
+    val previousBoard: Board = Board(),
 ) {
+
+    fun undo() : GameState{
+        //if (!board.equals(previousBoard)) {
+            var oldTurn:BoardCellValue = BoardCellValue.CIRCLE
+
+            if (currentTurn == BoardCellValue.CIRCLE){
+                oldTurn = BoardCellValue.CROSS
+            }else if (currentTurn == BoardCellValue.CROSS ){
+                oldTurn = BoardCellValue.CIRCLE
+            }
+            return copy(board = previousBoard, currentTurn = oldTurn)
+
+       // }
+       //return copy()
+    }
+
     fun playIJ(i: Int, j: Int) : GameState {
         val nextPlayer : BoardCellValue
+        val previousBoard = board.copy()
         val newBoard = board.makeMove(i,j,currentTurn)
         var newPlayerOScore = playerOScore
         var newPlayerXScore = playerXScore
@@ -30,6 +46,7 @@ data class GameState(
             newPlayerXScore += newScore
         }
         return copy(
+            previousBoard = previousBoard,
             board = newBoard,
             currentTurn = nextPlayer,
             linesCreated = newLines,
@@ -60,10 +77,10 @@ fun calculateLinesAndScore(
     val verticalLine = calculateLine(board, player, i, j, 1, 0)
     val horizontalLine = calculateLine(board, player, i, j, 0, 1)
 
-    Log.d("TTT", "topLeftDiagonal: $topLeftDiagonal")
-    Log.d("TTT", "topRightDiagonal: $topRightDiagonal")
-    Log.d("TTT", "verticalLine: $verticalLine")
-    Log.d("TTT", "horizontalLine: $horizontalLine")
+//    Log.d("TTT", "topLeftDiagonal: $topLeftDiagonal")
+//    Log.d("TTT", "topRightDiagonal: $topRightDiagonal")
+//    Log.d("TTT", "verticalLine: $verticalLine")
+//    Log.d("TTT", "horizontalLine: $horizontalLine")
 
     val allLines = listOfNotNull(
         topLeftDiagonal,
