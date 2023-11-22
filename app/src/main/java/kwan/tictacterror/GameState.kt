@@ -8,33 +8,21 @@ fun Line.containsPoint(i : Int, j: Int): Boolean = contains(Point(i,j))
 data class GameState(
     val playerOScore: Int = 0,
     val playerXScore: Int = 0,
-    val currentTurn:BoardCellValue = BoardCellValue.CROSS,
-    val linesCreated : List<Line> = emptyList(),
+    val currentTurn: BoardCellValue = BoardCellValue.CROSS,
+    val linesCreated: List<Line> = emptyList(),
     val hasWon: Boolean = false,
-    val board:Board = Board(),
-    val previousBoard: Board = Board(),
-    val gameStarted:Boolean = false
+    val board: Board = Board(),
+    val previousState: GameState? = null,
+    val gameStarted: Boolean = false
 ) {
 
-    fun undo() : GameState{
-        //if (!board.equals(previousBoard)) {
-            var oldTurn:BoardCellValue = BoardCellValue.CIRCLE
-
-            if (currentTurn == BoardCellValue.CIRCLE){
-                oldTurn = BoardCellValue.CROSS
-            }else if (currentTurn == BoardCellValue.CROSS ){
-                oldTurn = BoardCellValue.CIRCLE
-            }
-            return copy(board = previousBoard, currentTurn = oldTurn)
-
-       // }
-       //return copy()
+    fun undo() : GameState {
+        return previousState?.copy(previousState = null) ?: this
     }
 
     fun playIJ(i: Int, j: Int) : GameState {
         val nextPlayer : BoardCellValue
-        val newGameStarted : Boolean = true
-        val previousBoard = board.copy()
+        val previousState = this
         val newBoard = board.makeMove(i,j,currentTurn)
         var newPlayerOScore = playerOScore
         var newPlayerXScore = playerXScore
@@ -48,13 +36,13 @@ data class GameState(
             newPlayerXScore += newScore
         }
         return copy(
-            previousBoard = previousBoard,
+            previousState = previousState,
             board = newBoard,
             currentTurn = nextPlayer,
             linesCreated = newLines,
             playerOScore = newPlayerOScore,
             playerXScore = newPlayerXScore,
-            gameStarted = newGameStarted
+            gameStarted = true
         )
     }
 }
@@ -127,8 +115,7 @@ fun calculateLine(
 
 data class Board(
     val board: Array<Array<BoardCellValue>> = Array(9, {i -> Array(9, {j -> BoardCellValue.NONE})}),
-    var activeBoard: Int = 0
-
+    val activeBoard: Int = 0
 ) {
     fun emptySpace(i:Int, j:Int):Boolean{
         if (board[i][j] != BoardCellValue.NONE){
@@ -144,24 +131,18 @@ data class Board(
         }
 
         newBoard[row][col] = currentTurn
-
+        var newActiveBoard = activeBoard
         if (advanceActiveBoard(newBoard, activeBoard)) {
-            if (activeBoard == 2){
-                activeBoard = 5
-            } else if (activeBoard == 5){
-                activeBoard = 8
-            } else if (activeBoard > 6 && activeBoard <= 8){
-                activeBoard -=1
-            }else if (activeBoard == 6){
-                activeBoard = 3
-            }else if (activeBoard == 3){
-                activeBoard = 4
-            } else {
-                activeBoard+=1
+            newActiveBoard = when (activeBoard) {
+                2 -> 5
+                5 -> 8
+                in 7..8 -> activeBoard - 1
+                6 -> 3
+                3 -> 4
+                else -> activeBoard + 1
             }
         }
-        return Board(newBoard, activeBoard)
-
+        return Board(newBoard, newActiveBoard)
     }
 
     fun isPlayable(i:Int, j:Int) : Boolean {

@@ -95,7 +95,7 @@ fun Undo(
     IconButton(
         enabled = viewModel.canUndo(),
         onClick = { viewModel.undo() }
-    ){
+    ) {
         Icon(Icons.Default.ArrowBack, contentDescription = "Undo")
     }
 }
@@ -153,9 +153,8 @@ fun GameBoard(
 
 
         BoardBase()
-        if (!viewModel.BoardDirectionNoShow()){
+        if (viewModel.showDirections()) {
             BoardDirectionLine()
-
         }
 
 
@@ -183,8 +182,7 @@ fun GameBoard(
                 if (gameState.board.isPlayable(j,i)){
                     modifier = modifier.clickable {
                         viewModel.playIJ(j,i)
-                        viewModel.BoardDirectionNoShow()
-
+                        viewModel.showDirections()
                     }
                 }
                 Tile(gameState.board.board[j][i], modifier = modifier)

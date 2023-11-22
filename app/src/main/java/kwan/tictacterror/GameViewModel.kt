@@ -17,11 +17,11 @@ class GameViewModel: ViewModel() {
     }
 
     fun canUndo():Boolean{
-        return state.value.previousBoard != state.value.board
+        return state.value.previousState != null
     }
 
-    fun BoardDirectionNoShow():Boolean{
-        return state.value.gameStarted
+    fun showDirections(): Boolean {
+        return !state.value.gameStarted
     }
 
     fun restart(){
@@ -40,9 +40,6 @@ class GameViewModel: ViewModel() {
     fun setMode(mode: Mode) {
         this.gameMode = mode
     }
-
-
-
 }
 
 enum class Mode{
