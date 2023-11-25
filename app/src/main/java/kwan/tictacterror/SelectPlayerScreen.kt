@@ -66,7 +66,6 @@ fun SelectPlayer(
             onClick = {
                 viewModel.setMode(Mode.SinglePlayer(GameAi()))
                 navController.navigate(route = Screen.GameScreen.route)
-
             },
             shape = RoundedCornerShape(5.dp),
             elevation = ButtonDefaults.buttonElevation(5.dp),

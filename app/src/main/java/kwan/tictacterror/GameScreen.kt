@@ -182,7 +182,6 @@ fun GameBoard(
                 if (gameState.board.isPlayable(j,i)){
                     modifier = modifier.clickable {
                         viewModel.playIJ(j,i)
-                        viewModel.showDirections()
                     }
                 }
                 Tile(gameState.board.board[j][i], modifier = modifier)

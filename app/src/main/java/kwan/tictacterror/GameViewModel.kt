@@ -12,7 +12,7 @@ class GameViewModel: ViewModel() {
     //when player click on certain square, update game board state
     fun playIJ(i: Int, j: Int){
         state.value = state.value.playIJ(i,j)
-        if (gameMode is Mode.SinglePlayer) {
+        if (gameMode is Mode.SinglePlayer && !state.value.hasWon) {
             state.value = (gameMode as Mode.SinglePlayer).ai.playNextMove(state.value)
         }
         canUndo = true

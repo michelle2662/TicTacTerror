@@ -8,9 +8,9 @@ fun Line.containsPoint(i : Int, j: Int): Boolean = contains(Point(i,j))
 data class GameState(
     val playerOScore: Int = 0,
     val playerXScore: Int = 0,
+    val winner: BoardCellValue? = null,
     val currentTurn: BoardCellValue = BoardCellValue.CROSS,
     val linesCreated: List<Line> = emptyList(),
-    val hasWon: Boolean = false,
     val board: Board = Board(),
     val previousState: GameState? = null,
     val gameStarted: Boolean = false
@@ -19,6 +19,8 @@ data class GameState(
     fun undo() : GameState {
         return previousState ?: this
     }
+
+    val hasWon: Boolean get() = winner != null
 
     fun playIJ(i: Int, j: Int) : GameState {
         val nextPlayer : BoardCellValue
@@ -35,9 +37,22 @@ data class GameState(
             nextPlayer = BoardCellValue.CIRCLE
             newPlayerXScore += newScore
         }
+
+        var winner = winner
+        if (winner == null && possibleMoves().none()) {
+            winner = if (playerOScore > playerXScore) {
+                BoardCellValue.CIRCLE
+            } else if (playerXScore > playerOScore) {
+                BoardCellValue.CROSS
+            } else {
+                BoardCellValue.NONE
+            }
+        }
+
         return copy(
             previousState = previousState,
             board = newBoard,
+            winner = winner,
             currentTurn = nextPlayer,
             linesCreated = newLines,
             playerOScore = newPlayerOScore,
@@ -51,18 +66,22 @@ private fun Line.toScore(): Int {
     return 2 * size - 5
 }
 
-fun GameState.possibleMoves(): List<Point> {
-    val yOffset = (board.activeBoard % 3) * 3
-    val xOffset = (board.activeBoard / 3) * 3
-    val moves = mutableListOf<Point>()
+val moves3x3 = buildList {
     for (i in 0 until 3) {
         for (j in 0 until 3) {
-            if (board.board[i + xOffset][j + yOffset] == BoardCellValue.NONE) {
-                moves.add(Point(i + xOffset, j + yOffset))
-            }
+            add(Point(i,j))
         }
     }
-    return moves
+}
+
+fun GameState.possibleMoves(): Sequence<Point> {
+    val yOffset = (board.activeBoard % 3) * 3
+    val xOffset = (board.activeBoard / 3) * 3
+
+    return moves3x3
+        .asSequence()
+        .map { Point(it.x + xOffset, it.y + yOffset) }
+        .filter { board.isEmpty(it.x, it.y) }
 }
 
 
@@ -130,12 +149,10 @@ data class Board(
     val board: Array<Array<BoardCellValue>> = Array(9, {i -> Array(9, {j -> BoardCellValue.NONE})}),
     val activeBoard: Int = 0
 ) {
-    fun emptySpace(i:Int, j:Int):Boolean{
-        if (board[i][j] != BoardCellValue.NONE){
-            return false
-        }
-        return true
+    fun isEmpty(i:Int, j:Int): Boolean {
+        return board[i][j] == BoardCellValue.NONE
     }
+
     fun makeMove(row:Int, col:Int, currentTurn: BoardCellValue) : Board {
         val newBoard : Array<Array<BoardCellValue>> = Array(9) { i ->
             Array(
@@ -160,7 +177,7 @@ data class Board(
 
     fun isPlayable(i:Int, j:Int) : Boolean {
         val index :Int = (i/3 * 3) + (j/3)
-        return activeBoard == index && emptySpace(i,j)
+        return activeBoard == index && isEmpty(i,j)
     }
 }
 
@@ -240,12 +257,6 @@ private fun advanceActiveBoard(board:Array<Array<BoardCellValue>>, activeBoard: 
 
 }
 
-
-
 enum class BoardCellValue{
     CIRCLE, CROSS, NONE
-}
-
-enum class VictoryType{
-
 }
