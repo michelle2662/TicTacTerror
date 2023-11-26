@@ -114,12 +114,12 @@ private fun distanceHeuristic(move: Point): Double {
 
 val heuristics = listOf(
     listOf(1, 2, 3, 1, 2, 3, 1, 1, 1),
-    listOf(2, 4, 4, 3, 3, 4, 4, 3, 2),
+    listOf(2, 4, 4, 3, 3, 4, 3, 3, 2),
     listOf(3, 4, 5, 5, 4, 5, 5, 4, 3),
     listOf(1, 3, 4, 3, 3, 3, 4, 4, 2),
     listOf(1, 2, 3, 3, 3, 3, 5, 4, 3),
     listOf(1, 2, 3, 3, 3, 3, 5, 4, 3),
-    listOf(3, 4, 5, 5, 4, 5, 5, 4, 1),
-    listOf(2, 3, 4, 4, 3, 3, 4, 3, 1),
+    listOf(3, 4, 5, 5, 4, 5, 5, 3, 1),
+    listOf(2, 3, 3, 4, 3, 3, 4, 3, 1),
     listOf(1, 1, 1, 3, 2, 1, 3, 2, 1)
 )

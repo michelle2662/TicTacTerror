@@ -51,7 +51,7 @@ import kwan.tictacterror.ui.theme.Background
 @Composable
 fun GameScreen(
     viewModel: GameViewModel,
-    gameState:GameState = viewModel.state.value,
+    uiState: UiState = viewModel.uiState.value,
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
@@ -67,20 +67,20 @@ fun GameScreen(
     ){
 
         //Player info
-        PlayerInfo(gameState)
+        PlayerInfo(uiState.game)
 
         //title
         Title()
 
         //draw game board
-        GameBoard(gameState, viewModel)
+        GameBoard(uiState, viewModel)
 
 
         //player turn information
         PlayerTurn(viewModel)
 
         //undo
-        Undo(gameState, viewModel)
+        Undo(viewModel)
 
         //
 
@@ -89,7 +89,6 @@ fun GameScreen(
 
 @Composable
 fun Undo(
-    gameState: GameState,
     viewModel: GameViewModel
 ){
     IconButton(
@@ -133,9 +132,10 @@ fun PlayerInfo(gameState: GameState){
 }
 @Composable
 fun GameBoard(
-    gameState: GameState,
+    uiState: UiState,
     viewModel:GameViewModel
 ) {
+    val gameState = uiState.game
     //Game board
     Box(modifier = Modifier
         .wrapContentWidth()
@@ -158,14 +158,14 @@ fun GameBoard(
         }
 
 
-        var showLine: Line? by remember { mutableStateOf(null) }
-        LaunchedEffect(key1 = gameState.linesCreated) {
-            gameState.linesCreated.forEach {
-                showLine = it
-                delay(300)
-            }
-            showLine = null
-        }
+        var showLine = uiState.animatedLine
+        //LaunchedEffect(key1 = gameState.linesCreated) {
+        //    gameState.linesCreated.forEach {
+        //        showLine = it
+        //        delay(300)
+        //    }
+        //    showLine = null
+        //}
 
         for (i in 0 until 9) {
             for (j in 0 until 9){
@@ -252,7 +252,7 @@ fun BoardDirectionLine(
 }
 
 @Composable
-fun PlayerTurn(viewModel: GameViewModel){
+fun PlayerTurn(viewModel: GameViewModel) {
     //Player turn
     Row(
         modifier = Modifier
@@ -266,7 +266,7 @@ fun PlayerTurn(viewModel: GameViewModel){
             fontStyle = FontStyle.Italic)
 
         Button(
-            onClick = {viewModel.restart()},
+            onClick = { viewModel.restart() },
             shape = RoundedCornerShape(5.dp),
             elevation = ButtonDefaults.buttonElevation(5.dp),
             colors = ButtonDefaults.buttonColors(

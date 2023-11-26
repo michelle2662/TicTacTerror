@@ -77,7 +77,6 @@ val moves3x3 = buildList {
 fun GameState.possibleMoves(): Sequence<Point> {
     val yOffset = (board.activeBoard % 3) * 3
     val xOffset = (board.activeBoard / 3) * 3
-
     return moves3x3
         .asSequence()
         .map { Point(it.x + xOffset, it.y + yOffset) }
@@ -166,6 +165,7 @@ data class Board(
             newActiveBoard = when (activeBoard) {
                 2 -> 5
                 5 -> 8
+                4 -> 4
                 in 7..8 -> activeBoard - 1
                 6 -> 3
                 3 -> 4
