@@ -105,7 +105,6 @@ class GameViewModel: ViewModel() {
                 }
             }
             GameEvent.Undo -> {
-                check(uiState.value.currentPlayerIsHuman)
                 updateState {
                     copy(
                         game = game.undo(),
@@ -114,7 +113,7 @@ class GameViewModel: ViewModel() {
                         canUndo = false
                     )
                 }
-                if (!uiState.value.currentPlayerIsHuman) {
+                while (!uiState.value.currentPlayerIsHuman) {
                     updateState {
                         copy(
                             game = game.undo(),
