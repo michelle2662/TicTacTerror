@@ -2,6 +2,7 @@ package kwan.tictacterror
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,14 +18,21 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -94,15 +102,17 @@ fun GameScreen(
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun Appbar(
     navController:NavController,
     viewModel: GameViewModel,
 ){
-    //var showMenu by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
 
     TopAppBar(
+
         title = {},
         navigationIcon = {
             IconButton(onClick = {
@@ -110,21 +120,31 @@ fun Appbar(
             }) {
                 Icon(Icons.Default.ArrowBack, null)
             }
-        })
+        },
+
+
 //        } ,
-//        actions = {
-//            IconButton(onClick = { showMenu = !showMenu }) {
-//                Icon(Icons.Default.MoreVert , null)
-//            }
-//            DropdownMenu(expanded = showMenu, onDismissRequest = {
-//                showMenu = false
-//            }) {
-//                DropdownMenuItem(text = {Text("Restart")},
-//                    onClick = {
-//                       viewModel.restart()
-//                    })
-//            }
-//        })
+        actions = {
+            IconButton(onClick = { showMenu = !showMenu }) {
+                Icon(Icons.Default.MoreVert , null)
+            }
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = {
+                showMenu = false
+            })
+            {
+                DropdownMenuItem(text = {Text("Restart")},
+                    onClick = {
+                       viewModel.restart()
+                    })
+
+                DropdownMenuItem(text = {Text("Tutorial")},
+                    onClick = {
+
+                    })
+            }
+        })
 }
 @Composable
 fun Restart(
