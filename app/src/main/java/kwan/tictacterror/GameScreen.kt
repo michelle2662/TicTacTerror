@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -27,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,11 +44,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import kwan.tictacterror.ui.theme.Background
 
 
@@ -110,6 +110,22 @@ fun Appbar(
     viewModel: GameViewModel,
 ){
     var showMenu by remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(false) }
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            confirmButton = {
+                TextButton(onClick = { showDialog.value = false }) {
+                    Text("Ok")
+                }
+            },
+            text = {
+                Text("Tutorial")
+            }
+        )
+    }
+
 
     TopAppBar(
 
@@ -141,11 +157,13 @@ fun Appbar(
 
                 DropdownMenuItem(text = {Text("Tutorial")},
                     onClick = {
-
+                        showDialog.value = true
                     })
             }
         })
 }
+
+
 @Composable
 fun Restart(
     viewModel: GameViewModel
@@ -356,12 +374,12 @@ fun Tile(
     }
 }
 
-@ExperimentalMaterial3Api
-@Preview
-@Composable
-fun GameScreenPreview(){
-    GameScreen(
-        navController = rememberNavController(),
-        viewModel = GameViewModel()
-    )
-}
+//@ExperimentalMaterial3Api
+//@Preview
+//@Composable
+//fun GameScreenPreview(){
+//    GameScreen(
+//        navController = rememberNavController(),
+//        viewModel = GameViewModel()
+//    )
+//}
