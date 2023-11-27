@@ -19,35 +19,30 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.delay
 import kwan.tictacterror.ui.theme.Background
 
 
+@ExperimentalMaterial3Api
 @Composable
 fun GameScreen(
     viewModel: GameViewModel,
@@ -59,43 +54,91 @@ fun GameScreen(
         modifier = modifier
             .fillMaxSize() //for different phone screen size
             .background(Background) //set background color
-            .padding(horizontal = 30.dp), //padding horizontally from both sides from edge
 
-        horizontalAlignment = Alignment.CenterHorizontally, //keep child of column horizontal
         //verticalArrangement = Arrangement.spacedBy(10.dp) //keep space evenly
 
     ){
+        //info and tutorial
+        Appbar(navController, viewModel)
 
-        //Player info
-        PlayerInfo(uiState.game)
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 30.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            //Player info
+            PlayerInfo(uiState.game)
 
-        //title
-        Title()
+            //title
+            Title()
 
-        //draw game board
-        GameBoard(uiState, viewModel)
+            //draw game board
+            GameBoard(uiState, viewModel)
 
 
-        //player turn information
-        PlayerTurn(viewModel)
+            //player turn information
+            PlayerTurnAndUndo(viewModel)
+        }
+
+
+
 
         //undo
-        Undo(viewModel)
+        //Restart(viewModel)
 
-        //
+
 
     }
+    //info and tutorial
+
 }
 
+@ExperimentalMaterial3Api
 @Composable
-fun Undo(
+fun Appbar(
+    navController:NavController,
+    viewModel: GameViewModel,
+){
+    //var showMenu by remember { mutableStateOf(false) }
+
+    TopAppBar(
+        title = {},
+        navigationIcon = {
+            IconButton(onClick = {
+                navController.navigate(route = Screen.SelectPlayerScreen.route)
+            }) {
+                Icon(Icons.Default.ArrowBack, null)
+            }
+        })
+//        } ,
+//        actions = {
+//            IconButton(onClick = { showMenu = !showMenu }) {
+//                Icon(Icons.Default.MoreVert , null)
+//            }
+//            DropdownMenu(expanded = showMenu, onDismissRequest = {
+//                showMenu = false
+//            }) {
+//                DropdownMenuItem(text = {Text("Restart")},
+//                    onClick = {
+//                       viewModel.restart()
+//                    })
+//            }
+//        })
+}
+@Composable
+fun Restart(
     viewModel: GameViewModel
 ){
-    IconButton(
-        enabled = viewModel.canUndo(),
-        onClick = { viewModel.undo() }
+    Button(
+        onClick = { viewModel.restart() },
+        shape = RoundedCornerShape(5.dp),
+        elevation = ButtonDefaults.buttonElevation(5.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Gray,
+            contentColor = Color.Black)
     ) {
-        Icon(Icons.Default.ArrowBack, contentDescription = "Undo")
+        Text(text = "Restart", fontSize = 16.sp, fontStyle = FontStyle.Italic)
     }
 }
 
@@ -120,7 +163,7 @@ fun PlayerInfo(gameState: GameState){
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 50.dp, top = 80.dp),
+            .padding(bottom = 50.dp, top = 30.dp),
 
 
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -252,7 +295,7 @@ fun BoardDirectionLine(
 }
 
 @Composable
-fun PlayerTurn(viewModel: GameViewModel) {
+fun PlayerTurnAndUndo(viewModel: GameViewModel) {
     //Player turn
     Row(
         modifier = Modifier
@@ -265,15 +308,13 @@ fun PlayerTurn(viewModel: GameViewModel) {
             fontSize = 24.sp,
             fontStyle = FontStyle.Italic)
 
-        Button(
-            onClick = { viewModel.restart() },
-            shape = RoundedCornerShape(5.dp),
-            elevation = ButtonDefaults.buttonElevation(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Gray,
-                contentColor = Color.Black)
+
+
+        IconButton(
+            enabled = viewModel.canUndo(),
+            onClick = { viewModel.undo() }
         ) {
-            Text(text = "Restart", fontSize = 16.sp, fontStyle = FontStyle.Italic)
+            Icon(Icons.Default.ArrowBack, contentDescription = "Undo")
         }
 
     }
@@ -295,6 +336,7 @@ fun Tile(
     }
 }
 
+@ExperimentalMaterial3Api
 @Preview
 @Composable
 fun GameScreenPreview(){
