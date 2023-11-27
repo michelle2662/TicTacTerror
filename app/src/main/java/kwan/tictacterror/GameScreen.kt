@@ -290,7 +290,7 @@ fun HighlightActiveGrid(
         val startY = grid * (activeBoard / 3) + 1.dp.toPx()
 
         drawRect(
-            color = Color(0xA3FF9800),
+            color = Color(0xE4F45C36),
             topLeft = Offset(startX, startY),
             size = Size(
                 grid - 2.dp.toPx(),
