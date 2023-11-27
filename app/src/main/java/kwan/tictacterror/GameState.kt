@@ -149,6 +149,8 @@ data class Board(
     val board: Array<Array<BoardCellValue>> = Array(9, {i -> Array(9, {j -> BoardCellValue.NONE})}),
     val activeBoard: Int = 0
 ) {
+
+
     fun isEmpty(i:Int, j:Int): Boolean {
         return board[i][j] == BoardCellValue.NONE
     }
