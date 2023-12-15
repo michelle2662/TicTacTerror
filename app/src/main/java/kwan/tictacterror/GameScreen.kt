@@ -224,6 +224,7 @@ fun GameBoard(
     //Game board
     Box(modifier = Modifier
         .wrapContentWidth()
+        //.size(310.dp)
         //.aspectRatio(1f)
         .shadow(
             elevation = 10.dp,
