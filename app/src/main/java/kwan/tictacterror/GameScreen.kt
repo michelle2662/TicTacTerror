@@ -37,7 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -51,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import kwan.tictacterror.ui.theme.Background
 
 
 @ExperimentalMaterial3Api
@@ -65,7 +63,6 @@ fun GameScreen(
     Column(
         modifier = modifier
             .fillMaxSize() //for different phone screen size
-            .background(Background) //set background color
 
         //verticalArrangement = Arrangement.spacedBy(10.dp) //keep space evenly
 
@@ -211,8 +208,8 @@ fun PlayerInfo(gameState: GameState){
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
-        Text(text = "Player O: ${gameState.playerOScore}" , fontSize = 16.sp)
-        Text(text = "Player X: ${gameState.playerXScore}" , fontSize = 16.sp)
+        Text(text = "Player O: ${gameState.playerOScore}" , fontSize = 16.sp, color = Color.Black)
+        Text(text = "Player X: ${gameState.playerXScore}" , fontSize = 16.sp, color = Color.Black)
     }
 }
 @Composable
@@ -226,14 +223,13 @@ fun GameBoard(
         .wrapContentWidth()
         //.size(310.dp)
         //.aspectRatio(1f)
-        .shadow(
-            elevation = 10.dp,
-            shape = RoundedCornerShape(4.dp),
-            clip = true
-
-        )
-        .border(BorderStroke(2.dp, Color.Black))
-        .background(Background),
+//        .shadow(
+//            elevation = 10.dp,
+//            shape = RoundedCornerShape(4.dp),
+//            clip = true
+//
+//        )
+        .border(BorderStroke(2.dp, Color.Black)),
         contentAlignment = Alignment.Center
     ) {
 
